@@ -1,41 +1,26 @@
 import { DEVICE_REMOVED } from '../utils/constants';
-import { COMPLETE_UPDATE_REQUEST,
-         REQUEST_DATA_SETUP_RESPONSE,
-         REQUEST_TRANSFER_START_RESPONSE,
-         REQUEST_PACKET_SEND_RESPONSE,
-         REQUEST_VALIDATE_BLOCK_SEND_RESPONSE,
-         REQUEST_SECTOR_WRITE_SEND_RESPONSE,
-         REQUEST_REBOOT_AFTER_UPDATE } from '../utils/constants';
+
 
 import { UPDATE_NOT_STARTED,
          FTP_LOAD_SUCCESS,
-         SET_UP_TRANSFER,
          SET_UP_BULK_TRANSFER,
-         START_TRANSFER,
          START_BULK_TRANSFER,
          BULK_UPDATE_IN_PROGRESS,
          BULK_UPDATE_SECTOR_VALIDATE,
          BULK_SECTOR_WRITE,
          BULK_SECTOR_WRITE_IN_PROGRESS,
          BULK_SECTOR_WRITE_RESULT,
-         PACKET_SEND,
-         BLOCK_VALIDATE,
-         SECTOR_WRITE,
          TRANSFER_COMPLETED,
-         DB_UPDATE_COMPLETED,
+         UPDATE_PROGRESS_REPORT,
          UPDATE_ERROR,
          DISPLAY_UPDATE_ERROR,
-         DISPLAY_UPDATE_SETUP_ERROR,
-         DEVICE_START_SECTOR,
-         DEVICE_SUPPORTED } from '../utils/constants'
+         DISPLAY_UPDATE_SETUP_ERROR } from '../utils/constants'
 
 import { FILE_WRITE_STRUCTURE } from '../utils/structures';
 
-const BLOCK_SIZE = 512;
-const SMALL_SECTOR_SIZE = 8192;
+import { SMALL_SECTOR_SIZE } from '../utils/constants';
+import { SECTOR_WRITE_SUCCESS } from '../utils/constants';
 
-const SECTOR_WRITE_SUCCESS = 2;
-const SECTOR_WRITE_ERROR = 3;
 
 const DEFAULT_UPDATE_STATE = { total_number_of_sectors: 0,
                                current_sector: 0,
@@ -48,6 +33,7 @@ const DEFAULT_UPDATE_STATE = { total_number_of_sectors: 0,
                                sw_build: 0,
                                vehicle_make: '',
                                vehicle_model: '',
+                               progress_percent: 0,
                                update_progress_status: UPDATE_NOT_STARTED
                             };
 
@@ -109,6 +95,10 @@ export default function(state = DEFAULT_UPDATE_STATE, action){
       new_state = JSON.parse(JSON.stringify(state));
       new_state.update_progress_status = BULK_SECTOR_WRITE_IN_PROGRESS;
       return new_state;
+    case UPDATE_PROGRESS_REPORT:
+      new_state = JSON.parse(JSON.stringify(state));
+      new_state.progress_percent = action.payload;;
+      return new_state;     
     case BULK_SECTOR_WRITE_RESULT:
       console.log('in reducer BULK_SECTOR_WRITE_RESULT');
       new_state = JSON.parse(JSON.stringify(state));
@@ -131,7 +121,7 @@ export default function(state = DEFAULT_UPDATE_STATE, action){
       return new_state;
     case DISPLAY_UPDATE_ERROR:
       console.log('########## reset status UPDATE_NOT_STARTED #####');
-      new_state = JSON.parse(JSON.stringify(state));
+      new_state = JSON.parse(JSON.stringify(DEFAULT_UPDATE_STATE));
       new_state.update_progress_status = UPDATE_NOT_STARTED;
       return new_state;
     case DISPLAY_UPDATE_SETUP_ERROR:

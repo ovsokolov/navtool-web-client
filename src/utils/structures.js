@@ -309,3 +309,10 @@ export const FILE_WRITE_STRUCTURE={ id: 'FileWriteStracture',
   ]
 }
 
+export const MODAL_MESSAGES = { 
+  open_modal: false,
+  message_icon: '',
+  message_header: '',
+  message_text: ''
+}
+

@@ -30,11 +30,12 @@ export function loadFTPFile(sw_id){
         dispatch( { type: FTP_LOAD_SUCCESS, payload: data } );
       }else{
         console.log("MD5 calculation not correct");
-        dispatch( { type: FTP_LOAD_FAILURE, payload: "File load failed check sum" } );
+        dispatch( { type: FTP_LOAD_FAILURE, payload: { message_header: 'FTP File Load', message_text: 'File load failed check sum'}});
       }
     },
     error => {
-      dispatch( { type: FTP_LOAD_FAILURE, payload: "File Load failed" } );
+      dispatch( { type: FTP_LOAD_FAILURE, payload: { message_header: 'FTP File Load', message_text: 'File load failed'}});
+
     });
 
   };

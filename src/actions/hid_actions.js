@@ -1,10 +1,8 @@
 import {    DEVICE_DATA_MCU, 
             DEVICE_DATA_INPUT_SETTINGS, 
-            DEVICE_REMOVED,
-            DEVICE_NOT_SUPPORTED } from '../utils/constants';
+            DEVICE_REMOVED} from '../utils/constants';
 
-import {    SET_UP_TRANSFER, 
-            SET_UP_BULK_TRANSFER,
+import {    SET_UP_BULK_TRANSFER,
             START_TRANSFER,
             START_BULK_TRANSFER,
             BULK_UPDATE_IN_PROGRESS,
@@ -12,50 +10,27 @@ import {    SET_UP_TRANSFER,
             BULK_SECTOR_WRITE_IN_PROGRESS,
             BULK_SECTOR_WRITE,
             BULK_SECTOR_WRITE_RESULT,
-            PACKET_SEND,
-            REQUEST_PACKET_SEND,
-            SECTOR_WRITE,
-            BLOCK_VALIDATE,
-            REQUEST_VALIDATE_BLOCK_SEND_RESPONSE,
-            REQUEST_VALIDATE_BLOCK_SEND,
-            REQUEST_SECTOR_WRITE_SEND,
-            REQUEST_SECTOR_WRITE_SEND_RESPONSE,
-            REQUEST_PACKET_SEND_RESPONSE,
-            REQUEST_DATA_SETUP,
-            REQUEST_DATA_SETUP_RESPONSE,
             REQUEST_TRANSFER_START,
-            REQUEST_TRANSFER_START_RESPONSE } from '../utils/constants';
+            UPDATE_PROGRESS_REPORT,
+            DISPLAY_UPDATE_ERROR } from '../utils/constants';
 
+import { SMALL_SECTOR_SIZE, HID_TRANSFER_SIZE } from '../utils/constants';
+import { BL_WRITE_SUCCESS, BL_WRITE_FAILED } from '../utils/constants';
+import { SUCCESS_SETTINGS_UPDATE, FAILED_SETTINGS_UPDATE } from '../utils/constants';
 
-import { getSerialNumber,
-    checkOBDSupport,
-    getSoftwareId,
-    setDeviceSettings,
-    setDeviceOSDSettings,
-    setDeviceOBDSettings,
-    setVehicleInfo,
-    setUpTransferData,
-    setUpBulkTransferData,
-    getBulkTransfterCheckSum,
-    setUpBulkSectorWrite,
-    getBulkWriteSectorResult,
-    prepareInputSettings,
-    getDeviceData,
-    parseTransferDataResponse,
-    setUpTransferStart,
-    setUpPacketData,
-    parsePacketDataResponse,
-    setUpBlockValidateData,
-    parseSectorWriteResponse,
-    setUpSectorWriteData,
-    parseOBDStatus,
-    setCanFilterMessage,} from '../utils/device_utils';
+import {  setUpBulkTransferData,
+          getBulkTransfterCheckSum,
+          setUpBulkSectorWrite,
+          getBulkWriteSectorResult,
+          prepareInputSettings,
+          getDeviceData,
+          setUpTransferStart} from '../utils/device_utils';
 
 import { fetchDeviceDBData  } from './get_device_data';
 
 export function handleDeviceDataResult(deviceData){
     let action;
-    let usbResult; 
+    let subAction; 
     let result;
     return (dispatch) => {
         if(deviceData != undefined){
@@ -64,7 +39,7 @@ export function handleDeviceDataResult(deviceData){
         //console.log('action: ', action);
         switch(action) {
             case 0x90: //READ_CONFIG
-                let subAction =  deviceData[1];
+                subAction =  deviceData[1];
                 switch(subAction){
                     case 0x00: //READ_MCU
                         let deviceSettings = getDeviceData(deviceData);
@@ -73,14 +48,14 @@ export function handleDeviceDataResult(deviceData){
                             type: DEVICE_DATA_MCU,
                             payload: deviceSettings
                         });
-                    break;
+                        break;
                     case 0x01: //INPUT_CONGIG
                         console.log('DEVICE_DATA_SETTINGS in handleDeviceDataResult');
                         dispatch({
                             type: DEVICE_DATA_INPUT_SETTINGS,
                             payload: deviceData
                         });
-                    break;
+                        break;
                 }
                 break;
             case 0x20: //SETUP_DATA_TRANSFER_RESPONSE || BL_START_BULK_RESPONSE
@@ -112,6 +87,30 @@ export function handleDeviceDataResult(deviceData){
                   type: BULK_SECTOR_WRITE_RESULT,
                   payload: result
                 });
+                break;
+            case 0x91: //BL_WRITE_CONFIG_RESPONSE
+                console.log('BL_WRITE_CONFIG_RESPONSE');
+                subAction =  deviceData[1];
+                switch(subAction){
+                  case 0x01: //INPUT_CONGIG
+                    console.log('BL_WRITE_CONFIG_RESPONSE INPUT_CONGIG');
+                    let result =  deviceData[2];
+                    if(result == BL_WRITE_SUCCESS){
+                      dispatch({
+                          type: SUCCESS_SETTINGS_UPDATE,
+                          payload: { message_header: 'Settings Update', message_text: 'Settings Update Success'}
+                      });
+                      break;
+                    }
+                    if(result == BL_WRITE_FAILED){
+                      dispatch({
+                          type: FAILED_SETTINGS_UPDATE,
+                          payload: { message_header: 'Settings Update', message_text: 'Settings Update Failed'}
+                      });
+                      break;
+                    }
+                }
+                break;
         }
     };
 }
@@ -209,18 +208,25 @@ export function sendBulkUpdateData(action, update_status, device){
     });
     let currentSector = update_status.current_sector;
     let currentSectorData = update_status.sectors_data[currentSector].sectorData;
+    let total_number_of_sectors = update_status.total_number_of_sectors;
     //console.log(currentSectorData);
     let tmpSum = 0;
-    //SECTOR_SIZE = 8192 / HID_TRANSFER_SIZE = 64 
-    for(var i = 0; i < 128; i++){
+    let  totalTransfers = SMALL_SECTOR_SIZE / HID_TRANSFER_SIZE; //(8192 / 64)
+    for(var i = 0; i < totalTransfers; i++){
       //console.log("i=", i);
       let tmpArray = [];
-      for(var p = 0; p < 64; p++){
-        tmpSum += (currentSectorData[(64*i)+p]);
+      for(var p = 0; p < HID_TRANSFER_SIZE; p++){
+        tmpSum += (currentSectorData[(HID_TRANSFER_SIZE*i)+p]);
         tmpArray.push((currentSectorData[(64*i)+p]));
       }
       //console.log('i: ', i , 'sum: ', tmpSum);
       //console.log(tmpArray);
+      let progress = Math.round(( ((currentSector * SMALL_SECTOR_SIZE) + (i * HID_TRANSFER_SIZE)) * 100 )/ (total_number_of_sectors * SMALL_SECTOR_SIZE) ) - 1; //never show 100%
+      console.log('progress', progress, '%');
+      dispatch({
+        type: UPDATE_PROGRESS_REPORT,
+        payload: progress
+      });
       device.sendReport(0x00, new Uint8Array(tmpArray));
     } 
     console.log('sending tmpSum: ', tmpSum) 
@@ -232,4 +238,11 @@ export function handleDeviceRemoved(){
         type: DEVICE_REMOVED,
         payload: ""
     };
+}
+
+export function handleUpdateError(){
+  return {
+      type: DISPLAY_UPDATE_ERROR,
+      payload: { message_header: 'Update Error', message_text: 'Update error sector validate/write'}
+  };
 }

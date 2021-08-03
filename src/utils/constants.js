@@ -17,6 +17,7 @@ export const UPDATE_SYSTEM_SETTINGS = 'UPDATE_SYSTEM_SETTINGS';
 export const DEVICE_DATA_INPUT_SETTINGS = 'DEVICE_DATA_INPUT_SETTINGS';
 export const SAVE_DEVICE_SETTINGS = 'SAVE_DEVICE_SETTINGS';
 export const SUCCESS_SETTINGS_UPDATE = 'SUCCESS_SETTINGS_UPDATE';
+export const FAILED_SETTINGS_UPDATE = 'FAILED_SETTINGS_UPDATE';
 export const REQUEST_SBL = 'REQUEST_SBL';
 export const DEVICE_USER_RESET = 'DEVICE_USER_RESET';
 export const REQUEST_DATA_SETUP = 'REQUEST_DATA_SETUP';
@@ -93,6 +94,7 @@ export const DISPLAY_UPDATE_ERROR  = 'DISPLAY_UPDATE_ERROR';
 export const DOWNLOAD_TEAM_VIEWER  = 'DOWNLOAD_TEAM_VIEWER';
 export const DISPLAY_UPDATE_SETUP_ERROR  = 'DISPLAY_UPDATE_SETUP_ERROR';
 export const FETCH_DEVICE_DB_DATA = 'FETCH_DEVICE_DB_DATA';
+export const UPDATE_PROGRESS_REPORT = 'UPDATE_PROGRESS_REPORT';
 
 export const OBD_NOT_STARTED = "OBD_NOT_STARTED";
 export const OBD_IN_PROGRESS = "OBD_IN_PROGRESS";
@@ -120,4 +122,18 @@ export const OBD_NO_ERROR = 0;
 export const OBD_RUNNING = 1;
 export const OBD_SUCCESS = 2;
 export const OBD_FAILED = 3;
+
+export const BLOCK_SIZE = 512;
+export const SMALL_SECTOR_SIZE = 8192;
+export const HID_TRANSFER_SIZE = 64;
+
+export const SECTOR_WRITE_SUCCESS = 2;
+export const SECTOR_WRITE_ERROR = 3;
+
+export const BL_WRITE_SUCCESS = 2;
+export const BL_WRITE_FAILED = 3;
+
+export const HIDE_MODAL = 'HIDE_MODAL';
+export const ICON_INFO = 'info blue'
+export const ICON_ERROR = 'exclamation red'
 

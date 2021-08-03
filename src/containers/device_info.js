@@ -39,7 +39,7 @@ export default class DeviceInfo extends Component {
       iconColor = "red";
     }
     return (
-        <div className="three wide column">
+        <div className="two wide column">
             <i className={`huge ${iconColor} desktop icon`}></i>
             { this.renderDeviceStatus() }
         </div>
@@ -72,7 +72,7 @@ export default class DeviceInfo extends Component {
 
   renderSearchDevice(){
     return(
-        <div className="thirteen wide column">
+        <div className="fourteen wide column">
             <button onClick={this.props.onDeviceSearch} className="ui primary button">CLICK HERE TO CONNECT DEVICE TO COMPUTER</button>
         </div>
     );
@@ -80,7 +80,7 @@ export default class DeviceInfo extends Component {
 
   renderDeviceInfo(){
     return(
-      <div className="thirteen wide column left aligned ">
+      <div className="fourteen wide column left aligned ">
           <div className="row">
               <div className={`ui ${iconColor} horizontal label`}>Vehicle Make:</div>{this.props.deviceSettings.carMake}
           </div>
@@ -157,19 +157,19 @@ export default class DeviceInfo extends Component {
     return (
         <div>
             <div className="ui grid">
-              <div className="eleven wide column center aligned">
+              <div className="sixteen wide column center aligned">
                 <div className="ui tiny steps">
-                  <a className="tiny step" onClick={() => this.selectTab('first')}>
+                  <a className="tiny step" onClick={() => this.selectTab(0)}>
                     <div className="ui red horizontal label">Step 1</div>
                     Install Software
                   </a>
-                  <a className="tiny step" onClick={() => this.selectTab('second')}>
+                  <a className="tiny step" onClick={() => this.selectTab(1)}>
                       <div className="ui red horizontal label">Step 2</div>
-                      Configure Camera Settings
+                      Configure Input Settings
                   </a>
-                  <a className="tiny step" onClick={() => this.selectTab('third')}>
+                  <a className="tiny step" onClick={() => this.selectTab(2)}>
                       <div className="ui red horizontal label">Step 3</div>
-                      Configure OSD Settings (Optional)
+                      Configure Misc. (Optional)
                   </a>
                 </div>
               </div>
