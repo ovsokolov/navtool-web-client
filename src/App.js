@@ -45,7 +45,7 @@ function App() {
     }   
   }
 
-  if(checkBrowser()){
+  if("hid" in navigator){
     return (
       <div className="App">
           <Device />
@@ -58,7 +58,7 @@ function App() {
         justifyContent: "center",
         alignItems: "center"
       }}>
-          Please use supplorterd platform and latest Chrome browser.
+          Please use supplorterd desktop platforms (Chrome OS, Linux, macOS, and Windows) and latest version of Chrome browser.
       </div>
     );   
   }
