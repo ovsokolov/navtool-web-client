@@ -19,13 +19,8 @@ export default class DeviceInfo extends Component {
     this.renderSoftwareVersion = this.renderSoftwareVersion.bind(this);
     this.renderMCU = this.renderMCU.bind(this);
     this.createCopyButton = this.createCopyButton.bind(this);
-    this.selectTab = this.selectTab.bind(this);
   }
 
-  selectTab(msg){
-    console.log('here');
-    this.props.onSelectTab(msg);
-  }
 
   componentDidMount(){
     //const clipboard = new Clipboard('.mcu')
@@ -59,8 +54,6 @@ export default class DeviceInfo extends Component {
           </div>
       );
   }
-
-
 
   renderDevice(){
     if(this.props.deviceSettings.bootloaderMode == NO_DEVICE_STATUS){
@@ -156,24 +149,6 @@ export default class DeviceInfo extends Component {
   render(){
     return (
         <div>
-            <div className="ui grid">
-              <div className="sixteen wide column center aligned">
-                <div className="ui tiny steps">
-                  <a className="tiny step" onClick={() => this.selectTab(0)}>
-                    <div className="ui red horizontal label">Step 1</div>
-                    Install Software
-                  </a>
-                  <a className="tiny step" onClick={() => this.selectTab(1)}>
-                      <div className="ui red horizontal label">Step 2</div>
-                      Configure Input Settings
-                  </a>
-                  <a className="tiny step" onClick={() => this.selectTab(2)}>
-                      <div className="ui red horizontal label">Step 3</div>
-                      Configure Misc. (Optional)
-                  </a>
-                </div>
-              </div>
-            </div>
             <div className="ui center aligned page grid">
               <div className="sixteen column row">
                 { this.renderDeviceIcon() }

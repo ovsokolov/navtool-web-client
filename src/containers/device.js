@@ -21,7 +21,7 @@ import { updateDeviceDBData } from '../actions/get_device_data';
 import { hideDialog } from '../actions/misc_actions';
 
 
-import {  UPDATE_SYSTEM_SETTINGS,
+import {  NO_DEVICE_STATUS,
           FTP_LOAD_SUCCESS,
           SET_UP_BULK_TRANSFER,
           START_BULK_TRANSFER,
@@ -59,9 +59,68 @@ class Device extends Component {
     this.selectTab = this.selectTab.bind(this);
     this.handleTabChange = this.handleTabChange.bind(this);
 
+    //this.renderSteps = this.renderSteps.bind(this);
+    this.renderTabs = this.renderTabs.bind(this);
+
     console.log('constructor')
   }
 
+  renderSteps(){
+    if( this.props.system_settings.bootloaderMode == NO_DEVICE_STATUS){
+      return(
+        <div><br /><br /><br /><br /></div>
+      );
+    }else{
+      return(
+        <div className="ui grid">
+          <div className="sixteen wide column center aligned">
+            <div className="ui tiny steps">
+              <a className="tiny step" onClick={() => this.selectTab(0)}>
+                <div className="ui red horizontal label">Step 1</div>
+                Install Software
+              </a>
+              <a className="tiny step" onClick={() => this.selectTab(1)}>
+                  <div className="ui red horizontal label">Step 2</div>
+                  Configure Input Settings
+              </a>
+              <a className="tiny step" onClick={() => this.selectTab(2)}>
+                  <div className="ui red horizontal label">Step 3</div>
+                  Configure Misc. (Optional)
+              </a>
+            </div>
+          </div>
+        </div>
+      );
+    }
+  }
+
+  renderTabs(){
+    if( this.props.system_settings.bootloaderMode == NO_DEVICE_STATUS){
+      return(
+        <div></div>
+      );
+    }else{
+
+      let panes = [
+        { menuItem: 'Software Search', pane: { key: 'tab1', content: <SoftwareSearch 
+                                                                          onInstallClick={this.installSoftware}/>, size: 'massive' } },
+        { menuItem: 'Input Settings', pane: { key: 'tab2', content: <InputSettings 
+                                                                          onDeviceSettingsSave={this.saveInputConfig}
+                                                                          onResetSettings={this.readInputConfig}/>, size: 'massive' } },
+        { menuItem: 'Misc. Settings', pane: { key: 'tab3', content: <MiscSettings 
+                                                                          onDeviceSettingsSave={this.saveInputConfig}
+                                                                          onResetSettings={this.readInputConfig}/>, size: 'massive' } }
+      ];
+      return(
+        <Tab 
+          panes={panes} 
+          renderActiveOnly = {false} 
+          activeIndex={this.state.tabActiveIndex}
+          onTabChange={this.handleTabChange}
+        />
+      );
+    }
+  }
 
   handleTabChange({activeIndex}){
     console.log('selectTab:', activeIndex);
@@ -273,31 +332,16 @@ class Device extends Component {
   }
 
   render(){
-
-    let panes = [
-      { menuItem: 'Software Search', pane: { key: 'tab1', content: <SoftwareSearch 
-                                                                        onInstallClick={this.installSoftware}/>, size: 'massive' } },
-      { menuItem: 'Input Settings', pane: { key: 'tab2', content: <InputSettings 
-                                                                        onDeviceSettingsSave={this.saveInputConfig}
-                                                                        onResetSettings={this.readInputConfig}/>, size: 'massive' } },
-      { menuItem: 'Misc. Settings', pane: { key: 'tab3', content: <MiscSettings 
-                                                                        onDeviceSettingsSave={this.saveInputConfig}
-                                                                        onResetSettings={this.readInputConfig}/>, size: 'massive' } }
-    ];
     return (
         <div class="ui container">
+          {this.renderSteps()}
           <DeviceInfo 
             deviceSettings = {this.props.system_settings}
             onDeviceSearch={this.connectToDevice}
             onSelectTab={this.selectTab}
           />
           <br /><br />
-          <Tab 
-            panes={panes} 
-            renderActiveOnly = {false} 
-            activeIndex={this.state.tabActiveIndex}
-            onTabChange={this.handleTabChange}
-          />
+          {this.renderTabs()}
           {this.displayModal()}
         </div>
     );
