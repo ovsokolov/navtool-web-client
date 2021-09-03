@@ -81,11 +81,11 @@ class Device extends Component {
               </a>
               <a className="tiny step" onClick={() => this.selectTab(1)}>
                   <div className="ui red horizontal label">Step 2</div>
-                  Configure Input Settings
+                  Configure Video Input Settings
               </a>
               <a className="tiny step" onClick={() => this.selectTab(2)}>
                   <div className="ui red horizontal label">Step 3</div>
-                  Configure Misc. (Optional)
+                  Configure Device Settings (Optional)
               </a>
             </div>
           </div>
@@ -102,12 +102,12 @@ class Device extends Component {
     }else{
 
       let panes = [
-        { menuItem: 'Software Search', pane: { key: 'tab1', content: <SoftwareSearch 
+        { menuItem: 'Vehicle Search', pane: { key: 'tab1', content: <SoftwareSearch 
                                                                           onInstallClick={this.installSoftware}/>, size: 'massive' } },
-        { menuItem: 'Input Settings', pane: { key: 'tab2', content: <InputSettings 
+        { menuItem: 'Video Input Settings', pane: { key: 'tab2', content: <InputSettings 
                                                                           onDeviceSettingsSave={this.saveInputConfig}
                                                                           onResetSettings={this.readInputConfig}/>, size: 'massive' } },
-        { menuItem: 'Misc. Settings', pane: { key: 'tab3', content: <MiscSettings 
+        { menuItem: 'Device Settings', pane: { key: 'tab3', content: <MiscSettings 
                                                                           onDeviceSettingsSave={this.saveInputConfig}
                                                                           onResetSettings={this.readInputConfig}/>, size: 'massive' } }
       ];
