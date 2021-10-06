@@ -320,6 +320,7 @@ class Device extends Component {
     else if(this.state.device_update_status == UPDATE_IN_PROGRESS && this.props.software_update.update_progress_status == TRANSFER_COMPLETED){
       console.log("Transfer complete in device", this.props.software_update, this.props.system_settings);
       this.props.updateDeviceDBData(this.props.system_settings.serialNumber, this.props.software_update);
+      console.log("Transfer complete success message");
       this.props.handleUpdateSuccess();
       this.setState({device_update_status: UPDATE_NOT_STARTED});
     }
