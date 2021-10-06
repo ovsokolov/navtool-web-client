@@ -14,6 +14,7 @@ import {  handleDeviceDataResult,
           handleDeviceRemoved,
           saveSystemConfig,
           handleUpdateError,
+          handleUpdateSuccess,
           setSystemSetting } from '../actions/hid_actions';
 
 import { fetchSoftware } from '../actions/get_software';
@@ -319,6 +320,7 @@ class Device extends Component {
     else if(this.state.device_update_status == UPDATE_IN_PROGRESS && this.props.software_update.update_progress_status == TRANSFER_COMPLETED){
       console.log("Transfer complete in device", this.props.software_update, this.props.system_settings);
       this.props.updateDeviceDBData(this.props.system_settings.serialNumber, this.props.software_update);
+      this.props.handleUpdateSuccess();
       this.setState({device_update_status: UPDATE_NOT_STARTED});
     }
     else if(this.state.device_update_status == UPDATE_IN_PROGRESS && this.props.software_update.update_progress_status == UPDATE_ERROR){
@@ -358,7 +360,7 @@ function mapStateToProps(state){
 }
 
 function mapDispatchToProps(dispatch){
-  return bindActionCreators({ loadFTPFile, handleDeviceDataResult, sendSoftwareUpdateData, sendBulkUpdateData,handleDeviceRemoved, setSystemSetting, saveSystemConfig, fetchSoftware, updateDeviceDBData, handleUpdateError, hideDialog }, dispatch);
+  return bindActionCreators({ loadFTPFile, handleDeviceDataResult, sendSoftwareUpdateData, sendBulkUpdateData,handleDeviceRemoved, setSystemSetting, saveSystemConfig, fetchSoftware, updateDeviceDBData, handleUpdateError, handleUpdateSuccess, hideDialog }, dispatch);
 }
 
 export default connect(mapStateToProps,mapDispatchToProps)(Device);

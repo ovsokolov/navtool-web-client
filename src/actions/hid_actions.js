@@ -12,7 +12,8 @@ import {    SET_UP_BULK_TRANSFER,
             BULK_SECTOR_WRITE_RESULT,
             REQUEST_TRANSFER_START,
             UPDATE_PROGRESS_REPORT,
-            DISPLAY_UPDATE_ERROR } from '../utils/constants';
+            DISPLAY_UPDATE_ERROR,
+            DISPLAY_UPDATE_SUCCESS } from '../utils/constants';
 
 import { SMALL_SECTOR_SIZE, HID_TRANSFER_SIZE } from '../utils/constants';
 import { BL_WRITE_SUCCESS, BL_WRITE_FAILED } from '../utils/constants';
@@ -244,5 +245,12 @@ export function handleUpdateError(){
   return {
       type: DISPLAY_UPDATE_ERROR,
       payload: { message_header: 'Update Error', message_text: 'Update error sector validate/write'}
+  };
+}
+
+export function handleUpdateSuccess(){
+  return {
+      type: DISPLAY_UPDATE_SUCCESS,
+      payload: { message_header: 'Update Completed', message_text: 'Update completed'}
   };
 }

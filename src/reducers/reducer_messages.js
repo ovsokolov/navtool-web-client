@@ -2,6 +2,7 @@ import {    SUCCESS_SETTINGS_UPDATE,
             FAILED_SETTINGS_UPDATE,
             FTP_LOAD_FAILURE,
             DISPLAY_UPDATE_ERROR,
+            DISPLAY_UPDATE_SUCCESS,
             ICON_INFO,
             ICON_ERROR,
             HIDE_MODAL } from '../utils/constants';
@@ -13,6 +14,9 @@ export default function(state = JSON.parse(JSON.stringify(MODAL_MESSAGES)), acti
     let new_state = {};
     switch (action.type){
         case SUCCESS_SETTINGS_UPDATE:
+            new_state = Object.assign({}, state, action.payload, {open_modal: true, message_icon: `${ICON_INFO}`});
+            return new_state;
+        case DISPLAY_UPDATE_SUCCESS:
             new_state = Object.assign({}, state, action.payload, {open_modal: true, message_icon: `${ICON_INFO}`});
             return new_state;
         case FAILED_SETTINGS_UPDATE:
