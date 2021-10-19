@@ -2,7 +2,8 @@ import { FETCH_YEAR, FETCH_MODEL, DEVICE_REMOVED, DEVICE_NOT_SUPPORTED, RESET_SE
 var _ = require('lodash');
 
 const DEFAULT_DROPDOWN_VALUE = {id: 0, vehicle_year:"Select Year..."};
-const YEAR_LIST = _.range(1996,2020).map((i) => {
+let topYear = new Date().getFullYear();
+const YEAR_LIST = _.range(1996,topYear+2).reverse().map((i) => {
       return {id: i, vehicle_year:i};
     });
 

@@ -99,14 +99,14 @@ export function handleDeviceDataResult(deviceData){
                     if(result == BL_WRITE_SUCCESS){
                       dispatch({
                           type: SUCCESS_SETTINGS_UPDATE,
-                          payload: { message_header: 'Settings Update', message_text: 'Settings Update Success'}
+                          payload: { message_header: 'Settings Update', message_text: 'Settings Update Success', id: 'settingsok'}
                       });
                       break;
                     }
                     if(result == BL_WRITE_FAILED){
                       dispatch({
                           type: FAILED_SETTINGS_UPDATE,
-                          payload: { message_header: 'Settings Update', message_text: 'Settings Update Failed'}
+                          payload: { message_header: 'Settings Update', message_text: 'Settings Update Failed', id: 'settingsfail'}
                       });
                       break;
                     }
@@ -244,13 +244,13 @@ export function handleDeviceRemoved(){
 export function handleUpdateError(){
   return {
       type: DISPLAY_UPDATE_ERROR,
-      payload: { message_header: 'Update Error', message_text: 'Update error sector validate/write'}
+      payload: { message_header: 'Update Error', message_text: 'Update error sector validate/write', id: 'updatefailed'}
   };
 }
 
 export function handleUpdateSuccess(){
   return {
       type: DISPLAY_UPDATE_SUCCESS,
-      payload: { message_header: 'Update Completed', message_text: 'Update completed'}
+      payload: { message_header: 'Update Completed', message_text: 'Update completed', id: 'updateok'}
   };
 }

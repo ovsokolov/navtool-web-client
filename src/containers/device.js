@@ -257,7 +257,7 @@ class Device extends Component {
             </p>
           </Modal.Content>
           <Modal.Actions>
-            <Button color='green' onClick={() => this.closeModal()}>
+            <Button id={this.props.messages.id} color='green' onClick={() => this.closeModal()}>
               Ok
             </Button>
           </Modal.Actions>
