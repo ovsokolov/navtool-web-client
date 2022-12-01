@@ -125,7 +125,8 @@ export const OBD_SUCCESS = 2;
 export const OBD_FAILED = 3;
 
 export const BLOCK_SIZE = 512;
-export const SMALL_SECTOR_SIZE = 8192;
+//export const SMALL_SECTOR_SIZE = 8192;
+export const SMALL_SECTOR_SIZE = 4096;
 export const HID_TRANSFER_SIZE = 64;
 
 export const SECTOR_WRITE_SUCCESS = 2;

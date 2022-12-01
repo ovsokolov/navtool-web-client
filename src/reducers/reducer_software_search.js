@@ -53,8 +53,9 @@ export default function(state = JSON.parse(JSON.stringify(DEFAULT_STATE)), actio
     case SET_SOFTWARE:
       //return state.concat([ action.payload.data ]);
       //or (same crete new array). NEVER!!!!! mutate array
-      result = Object.assign({}, state, {sw_id: action.payload});
-      //console.log(result);
+      console.log("********* Software Search Reducer SET_SOFTWARE !!**********");
+      result = Object.assign({}, state, {sw_id: action.payload.software_id});
+      console.log(result);
       return result;
     case RESET_SEARCH:
       result = Object.assign({}, state, {vehicle_make: 0, vehicle_model: '', vehicle_year: '', automatic_transmission: 1});

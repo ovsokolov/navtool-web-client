@@ -2,6 +2,7 @@ import { DEVICE_REMOVED } from '../utils/constants';
 
 
 import { UPDATE_NOT_STARTED,
+         SET_SOFTWARE,
          FTP_LOAD_SUCCESS,
          SET_UP_BULK_TRANSFER,
          START_BULK_TRANSFER,
@@ -18,7 +19,7 @@ import { UPDATE_NOT_STARTED,
 
 import { FILE_WRITE_STRUCTURE } from '../utils/structures';
 
-import { SMALL_SECTOR_SIZE } from '../utils/constants';
+//import { SMALL_SECTOR_SIZE } from '../utils/constants';
 import { SECTOR_WRITE_SUCCESS } from '../utils/constants';
 
 
@@ -34,6 +35,8 @@ const DEFAULT_UPDATE_STATE = { total_number_of_sectors: 0,
                                vehicle_make: '',
                                vehicle_model: '',
                                progress_percent: 0,
+                               sector_size: -1,
+                               mcu_type: '',
                                update_progress_status: UPDATE_NOT_STARTED
                             };
 
@@ -42,11 +45,23 @@ export default function(state = DEFAULT_UPDATE_STATE, action){
   let new_state = {};
   let payload_data = {};
   switch (action.type){
+    case SET_SOFTWARE:
+      console.log("********* Software Update Reducer SET_SOFTWARE !!**********");
+      new_state = JSON.parse(JSON.stringify(DEFAULT_UPDATE_STATE));
+      new_state.mcu_type = action.payload.mcu_type;
+      new_state.sector_size = FILE_WRITE_STRUCTURE[action.payload.mcu_type].sector_size;
+      console.log(action.payload.mcu_type);
+      console.log(FILE_WRITE_STRUCTURE[action.payload.mcu_type].values);
+      console.log(FILE_WRITE_STRUCTURE[action.payload.mcu_type].sector_size);
+      return new_state;
     case FTP_LOAD_SUCCESS:
       ////console.log(action.payload);
       console.log("********* Software Update Reducer FTP_LOAD_SUCCESS !!**********");
-      new_state = JSON.parse(JSON.stringify(DEFAULT_UPDATE_STATE));
-      new_state.total_number_of_sectors = Math.ceil(action.payload.size / SMALL_SECTOR_SIZE);
+      //new_state = JSON.parse(JSON.stringify(DEFAULT_UPDATE_STATE));
+      new_state = JSON.parse(JSON.stringify(state));
+      //new_state.total_number_of_sectors = Math.ceil(action.payload.size / SMALL_SECTOR_SIZE);
+      new_state.total_number_of_sectors = Math.ceil(action.payload.size / new_state.sector_size);
+      console.log("number of sectors", new_state.total_number_of_sectors)
       new_state.current_sector = 0;
       new_state.software_file = atob(action.payload.file);
       new_state.file_size = action.payload.size;
@@ -142,9 +157,12 @@ function prepareSectorData(new_state){
   var tmpSectors = [];
   for (var currentSector = 0; currentSector < new_state.total_number_of_sectors; currentSector++) {
     var currentSectorSum = 0;
-    var currentStart = currentSector * SMALL_SECTOR_SIZE;
-    var currentEnd = currentStart + SMALL_SECTOR_SIZE;
-    let tmpDataArray = new Array(SMALL_SECTOR_SIZE).fill(255);
+    var currentStart = currentSector * new_state.sector_size;
+    var currentEnd = currentStart + new_state.sector_size;
+    let tmpDataArray = new Array(new_state.sector_size).fill(255);
+    //var currentStart = currentSector * SMALL_SECTOR_SIZE;
+    //var currentEnd = currentStart + SMALL_SECTOR_SIZE;
+    //let tmpDataArray = new Array(SMALL_SECTOR_SIZE).fill(255);
     var j, k;
     for (j = currentStart, k=0; j < currentEnd; j++, k++) {     
       if(j < new_state.file_size){
@@ -153,7 +171,8 @@ function prepareSectorData(new_state){
       }
       currentSectorSum += tmpDataArray[k];
     }
-    var tmpSector = Object.assign({},FILE_WRITE_STRUCTURE.values[currentSector], {sectorData: tmpDataArray, sectorSum: currentSectorSum});
+    //var tmpSector = Object.assign({},FILE_WRITE_STRUCTURE.values[currentSector], {sectorData: tmpDataArray, sectorSum: currentSectorSum});
+    var tmpSector = Object.assign({},FILE_WRITE_STRUCTURE[new_state.mcu_type].values[currentSector], {sectorData: tmpDataArray, sectorSum: currentSectorSum});
     tmpSectors.push(tmpSector);
     console.log(tmpSectors);
   }

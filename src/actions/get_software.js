@@ -63,10 +63,11 @@ export function fetchSoftwareDescription(mfg_id,sw_id, sw_build, vehicle_make, v
   };
 }
 
-export function setSoftware(software_id){
+export function setSoftware(software_id, mcu_type){
+  let payload_data = {software_id, mcu_type};
   return {
     type: SET_SOFTWARE,
-    payload: software_id
+    payload: payload_data
   };
 }
 

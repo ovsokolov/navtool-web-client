@@ -13,9 +13,10 @@ class SoftwareList extends Component {
     this.renderSoftware = this.renderSoftware.bind(this);
   }
 
-  selectSoftware(value){
-    console.log("inside selectSoftware", value);
-    this.props.onSelectSoftware(value);
+  selectSoftware(software_id, mcu_type){
+    console.log("inside selectSoftware software_id", software_id);
+    console.log("inside selectSoftware mcu_type", mcu_type);
+    this.props.onSelectSoftware(software_id, mcu_type);
   }
 
   renderSoftware(software, index){
@@ -46,12 +47,14 @@ class SoftwareList extends Component {
             { title: "MAKE" },
             { title: "MODEL" },
             { title: "YEAR" },
-            { title: "DESCRIPTION" }
+            { title: "DESCRIPTION" },
+            { title: "MCU TYPE" },
         ],
         columnDefs: [
           { width: "7%", targets: [0,2] },
           { width: "13%", targets: [3,5] },
-          { width: "50%", targets: [6] }
+          { width: "50%", targets: [6] },
+          { visible: false, targets: [7] }
         ],
         order: [[ 3, "asc" ],[ 4, "asc" ]]
     } );
@@ -77,7 +80,7 @@ class SoftwareList extends Component {
     //console.log(this.props.software_list);
     this.props.software_list.forEach(function(software){
       console.log(software);
-      var row = [software.id, software.sw_id,software.sw_build,software.vehicle_make,software.vehicle_model,"".concat(software.vehicle_year_from, "-", software.vehicle_year_to), software.sw_description];
+      var row = [software.id, software.sw_id,software.sw_build,software.vehicle_make,software.vehicle_model,"".concat(software.vehicle_year_from, "-", software.vehicle_year_to), software.sw_description, software.mcu_type];
       dataSet.push(row);
      });
     console.log("dataset");
@@ -89,6 +92,12 @@ class SoftwareList extends Component {
           sEmptyTable: "Click Search Button or Contact Technical Support"
         },
         data: dataSet,
+        columnDefs: [
+          { width: "7%", targets: [0,2] },
+          { width: "13%", targets: [3,5] },
+          { width: "50%", targets: [6] },
+          { visible: false, targets: [7] }
+        ],
         order: [[ 3, "asc" ],[ 4, "asc" ]]
     } );
 
@@ -109,7 +118,7 @@ class SoftwareList extends Component {
             var data = table.row(event.target.parentElement).data();
             console.log('row click');
             console.log(data);
-            this.selectSoftware(data[0]);
+            this.selectSoftware(data[0], data[7]);
         }
     }
     );

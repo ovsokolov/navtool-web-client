@@ -210,9 +210,11 @@ export function sendBulkUpdateData(action, update_status, device){
     let currentSector = update_status.current_sector;
     let currentSectorData = update_status.sectors_data[currentSector].sectorData;
     let total_number_of_sectors = update_status.total_number_of_sectors;
+    let sectorSize = update_status.sector_size;
     //console.log(currentSectorData);
     let tmpSum = 0;
-    let  totalTransfers = SMALL_SECTOR_SIZE / HID_TRANSFER_SIZE; //(8192 / 64)
+    //let  totalTransfers = SMALL_SECTOR_SIZE / HID_TRANSFER_SIZE; //(8192 / 64)
+    let  totalTransfers = sectorSize / HID_TRANSFER_SIZE; //(8192 / 64)
     for(var i = 0; i < totalTransfers; i++){
       //console.log("i=", i);
       let tmpArray = [];
@@ -222,7 +224,8 @@ export function sendBulkUpdateData(action, update_status, device){
       }
       //console.log('i: ', i , 'sum: ', tmpSum);
       //console.log(tmpArray);
-      let progress = Math.round(( ((currentSector * SMALL_SECTOR_SIZE) + (i * HID_TRANSFER_SIZE)) * 100 )/ (total_number_of_sectors * SMALL_SECTOR_SIZE) ) - 1; //never show 100%
+      //let progress = Math.round(( ((currentSector * SMALL_SECTOR_SIZE) + (i * HID_TRANSFER_SIZE)) * 100 )/ (total_number_of_sectors * SMALL_SECTOR_SIZE) ) - 1; //never show 100%
+      let progress = Math.round(( ((currentSector * sectorSize) + (i * HID_TRANSFER_SIZE)) * 100 )/ (total_number_of_sectors * sectorSize) ) - 1; //never show 100%
       console.log('progress', progress, '%');
       dispatch({
         type: UPDATE_PROGRESS_REPORT,

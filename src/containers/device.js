@@ -188,7 +188,8 @@ class Device extends Component {
         if (devices[0].opened){  
           console.log("Device is open.");
           this.readDeviceSettings();
-          this.readInputConfig();
+          setTimeout(this.readInputConfig,100);
+          //this.readInputConfig();
         }else{  
           console.log("Device not open.");  
         }
@@ -207,14 +208,13 @@ class Device extends Component {
   }
 
   async readDeviceSettings() {
-    //console.log('here', devices[0]);
+    //console.log('readDeviceSettings', devices[0]);
     //let tmpArray = [];
     devices[0].sendReport(0x00, new Uint8Array([0x90, 0x00, 0x00, 0x00, 0x00, 0x00]));
-
   }
 
   async readInputConfig() {
-    //console.log('here', devices[0]);
+    //console.log('readInputConfig', devices[0]);
     //let tmpArray = [];
     devices[0].sendReport(0x00, new Uint8Array([0x90, 0x01, 0x00, 0x00, 0x00, 0x00]));
   }

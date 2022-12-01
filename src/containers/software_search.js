@@ -133,9 +133,9 @@ class SoftwareSearch extends Component {
     this.props.setYear(vehicle_year);
   }
 
-  setSelectedSoftware(software_id){
-    //console.log("Software Slected: ", software_id);
-    this.props.setSoftware(software_id);
+  setSelectedSoftware(software_id, mcu_type){
+    console.log("Software Slected: ", software_id, mcu_type);
+    this.props.setSoftware(software_id, mcu_type);
   }
 
   resetSearch(){
